@@ -35,7 +35,6 @@ function extractError(err) {
   return "Đã xảy ra lỗi không xác định.";
 }
 
-/** Nội dung form login */
 function LoginForm({ onLoginSuccess }) {
   const history = useHistory();
   const [loginName, setLoginName] = useState("");
@@ -129,7 +128,6 @@ const REGISTER_INITIAL = {
   occupation: "",
 };
 
-/** Phải khai báo ngoài RegisterForm: nếu đặt bên trong, mỗi re-render tạo "loại" component mới → input bị remount và mất focus. */
 function RegisterPasswordField({ label, value, onChange, show, setShow, helperText }) {
   return (
     <TextField
@@ -284,7 +282,6 @@ function LoginRegister({ onLoginSuccess }) {
         py: 6,
       }}
     >
-      {/* Main landing card */}
       <Box
         sx={{
           maxWidth: 560,
@@ -298,7 +295,6 @@ function LoginRegister({ onLoginSuccess }) {
           textAlign: "center",
           position: "relative",
           transform: "rotate(-0.5deg)",
-          /* Tape decoration */
           "&::before": {
             content: '""',
             position: "absolute",
@@ -312,7 +308,6 @@ function LoginRegister({ onLoginSuccess }) {
           },
         }}
       >
-        {/* Icon */}
         <Box
           sx={{
             display: "inline-flex",
@@ -348,7 +343,6 @@ function LoginRegister({ onLoginSuccess }) {
           Chia sẻ ảnh
         </Typography>
 
-        {/* Decorative underline */}
         <Box
           sx={{
             width: 100,
@@ -363,25 +357,12 @@ function LoginRegister({ onLoginSuccess }) {
 
         <Typography
           variant="body1"
-          sx={{
-            color: COLORS.foreground,
-            opacity: 0.7,
-            mb: 4,
-            lineHeight: 1.8,
-          }}
+          sx={{ color: COLORS.foreground, opacity: 0.7, mb: 4, lineHeight: 1.8 }}
         >
           Chia sẻ khoảnh khắc — xem ảnh của bạn bè, bình luận và tải ảnh mới lên.
         </Typography>
 
-        {/* CTA buttons */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            gap: 2,
-            flexWrap: "wrap",
-          }}
-        >
+        <Box sx={{ display: "flex", justifyContent: "center", gap: 2, flexWrap: "wrap" }}>
           <Button
             size="large"
             startIcon={<Lock size={18} strokeWidth={2.5} />}
@@ -408,7 +389,6 @@ function LoginRegister({ onLoginSuccess }) {
           </Button>
         </Box>
 
-        {/* Decorative corner doodle */}
         <Typography
           sx={{
             position: "absolute",
@@ -425,7 +405,6 @@ function LoginRegister({ onLoginSuccess }) {
         </Typography>
       </Box>
 
-      {/* Dialog đăng nhập */}
       <Dialog open={loginOpen} onClose={() => setLoginOpen(false)} maxWidth="xs" fullWidth>
         <DialogTitle
           sx={{
@@ -466,7 +445,6 @@ function LoginRegister({ onLoginSuccess }) {
         </DialogContent>
       </Dialog>
 
-      {/* Dialog đăng ký */}
       <Dialog open={registerOpen} onClose={() => setRegisterOpen(false)} maxWidth="sm" fullWidth scroll="paper">
         <DialogTitle
           sx={{

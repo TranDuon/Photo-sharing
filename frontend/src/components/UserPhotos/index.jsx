@@ -23,9 +23,6 @@ import { MessageCircle, Send, Edit2, Trash2, Image as ImageIcon } from "lucide-r
 import fetchModel, { apiClient, extractApiError } from "../../lib/fetchModelData";
 import { COLORS, RADIUS, SHADOWS } from "../../designTokens";
 
-/* ─────────────────────────────────────────────
-   Helpers
-───────────────────────────────────────────── */
 function photoImageSrc(fileName) {
   const base = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
   return `${base}/images/${fileName}`;
@@ -46,9 +43,6 @@ function isPhotoOwner(photo, user) {
   return String(photo.user_id) === String(user._id);
 }
 
-/* ─────────────────────────────────────────────
-   CommentItem
-───────────────────────────────────────────── */
 function CommentItem({ comment }) {
   const { user } = comment;
   if (!user || !user.first_name) {
@@ -120,9 +114,6 @@ function CommentItem({ comment }) {
   );
 }
 
-/* ─────────────────────────────────────────────
-   AddCommentForm
-───────────────────────────────────────────── */
 function AddCommentForm({ photoId, loggedInUser, onAdded }) {
   const [text, setText] = useState("");
   const [posting, setPosting] = useState(false);
@@ -206,9 +197,6 @@ function AddCommentForm({ photoId, loggedInUser, onAdded }) {
   );
 }
 
-/* ─────────────────────────────────────────────
-   PhotoCard
-───────────────────────────────────────────── */
 function PhotoCard({ photo, loggedInUser, onPhotoUpdated, onPhotoDeleted, tiltDeg }) {
   const [localComments, setLocalComments] = useState(photo.comments ?? []);
   const [editing, setEditing] = useState(false);
@@ -252,7 +240,6 @@ function PhotoCard({ photo, loggedInUser, onPhotoUpdated, onPhotoDeleted, tiltDe
         "&:hover": { transform: "rotate(0deg)", boxShadow: SHADOWS.emphasized },
         position: "relative",
         overflow: "visible",
-        /* Tape decoration */
         "&::before": {
           content: '""',
           position: "absolute",
@@ -267,7 +254,6 @@ function PhotoCard({ photo, loggedInUser, onPhotoUpdated, onPhotoDeleted, tiltDe
         },
       }}
     >
-      {/* Photo image */}
       <CardMedia
         component="img"
         image={photoImageSrc(photo.file_name)}
@@ -291,7 +277,6 @@ function PhotoCard({ photo, loggedInUser, onPhotoUpdated, onPhotoDeleted, tiltDe
           </Alert>
         )}
 
-        {/* Date + owner actions row */}
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 1, mb: 1 }}>
           <Typography variant="caption" sx={{ opacity: 0.5 }}>
             {formatDate(photo.date_time)}
@@ -326,7 +311,6 @@ function PhotoCard({ photo, loggedInUser, onPhotoUpdated, onPhotoDeleted, tiltDe
           )}
         </Box>
 
-        {/* Caption / edit */}
         {editing ? (
           <Box sx={{ mt: 1 }}>
             <TextField
@@ -381,16 +365,8 @@ function PhotoCard({ photo, loggedInUser, onPhotoUpdated, onPhotoDeleted, tiltDe
           </>
         )}
 
-        {/* Dashed divider */}
-        <Box
-          sx={{
-            my: 2,
-            height: 0,
-            borderTop: `2px dashed ${COLORS.muted}`,
-          }}
-        />
+        <Box sx={{ my: 2, height: 0, borderTop: `2px dashed ${COLORS.muted}` }} />
 
-        {/* Comments header */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
           <Box
             sx={{
@@ -444,7 +420,6 @@ function PhotoCard({ photo, loggedInUser, onPhotoUpdated, onPhotoDeleted, tiltDe
         )}
       </CardContent>
 
-      {/* Delete confirm dialog */}
       <Dialog open={deleteOpen} onClose={() => !deleting && setDeleteOpen(false)} maxWidth="xs" fullWidth>
         <DialogTitle
           sx={{ fontFamily: '"Times New Roman", Times, serif', fontWeight: 700, fontSize: "1.3rem" }}
@@ -476,9 +451,6 @@ function PhotoCard({ photo, loggedInUser, onPhotoUpdated, onPhotoDeleted, tiltDe
   );
 }
 
-/* ─────────────────────────────────────────────
-   PhotoSkeleton
-───────────────────────────────────────────── */
 function PhotoSkeleton() {
   return (
     <Card>
@@ -498,18 +470,6 @@ function PhotoSkeleton() {
   );
 }
 
-/* ─────────────────────────────────────────────
-   UserPhotos — main component
-───────────────────────────────────────────── */
-
-/**
- * UserPhotos
- *
- * Props:
- *   setTopBarText   {function}    - cập nhật TopBar context
- *   loggedInUser    {object|null} - user đang đăng nhập
- *   refreshKey      {number}      - tăng giá trị để trigger refetch ảnh
- */
 function UserPhotos({ setTopBarText, loggedInUser, refreshKey }) {
   const { userId } = useParams();
   const [photos, setPhotos] = useState([]);
@@ -616,7 +576,6 @@ function UserPhotos({ setTopBarText, loggedInUser, refreshKey }) {
 
   return (
     <Box sx={{ p: 2, maxWidth: 700, mx: "auto" }}>
-      {/* Heading */}
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
         <Typography
           variant="h4"
@@ -637,10 +596,8 @@ function UserPhotos({ setTopBarText, loggedInUser, refreshKey }) {
         />
       </Box>
 
-      {/* Photo list */}
       <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
         {photos.map((photo, idx) => {
-          // Alternate slight tilts for playful layout
           const tilt = idx % 3 === 0 ? -1 : idx % 3 === 1 ? 0.8 : -0.5;
           return (
             <PhotoCard

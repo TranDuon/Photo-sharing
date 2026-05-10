@@ -18,9 +18,6 @@ import { Camera, LogOut, Plus, Image } from "lucide-react";
 import { apiClient, extractApiError } from "../../lib/fetchModelData";
 import { COLORS, RADIUS, SHADOWS } from "../../designTokens";
 
-/* ─────────────────────────────────────────────
-   Sub-component: Upload dialog
-───────────────────────────────────────────── */
 function UploadPhotoDialog({ open, onClose, onUploaded }) {
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -218,19 +215,6 @@ function UploadPhotoDialog({ open, onClose, onUploaded }) {
   );
 }
 
-/* ─────────────────────────────────────────────
-   Main component: TopBar
-───────────────────────────────────────────── */
-
-/**
- * TopBar
- *
- * Props:
- *   topBarText      {string}      - context màn hình hiện tại
- *   loggedInUser    {object|null} - user đang đăng nhập
- *   onLogout        {function}    - callback khi Logout
- *   onPhotoUploaded {function}    - callback sau khi upload ảnh thành công
- */
 function TopBar({ topBarText, loggedInUser, onLogout, onPhotoUploaded }) {
   const history = useHistory();
   const [uploadOpen, setUploadOpen] = useState(false);
@@ -260,7 +244,6 @@ function TopBar({ topBarText, loggedInUser, onLogout, onPhotoUploaded }) {
         }}
       >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between", minHeight: 60 }}>
-          {/* ── Bên TRÁI: logo / tên ── */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
             <Box
               sx={{
@@ -293,7 +276,6 @@ function TopBar({ topBarText, loggedInUser, onLogout, onPhotoUploaded }) {
             </Typography>
           </Box>
 
-          {/* ── Giữa: context ── */}
           {topBarText && (
             <Typography
               variant="body1"
@@ -310,7 +292,6 @@ function TopBar({ topBarText, loggedInUser, onLogout, onPhotoUploaded }) {
             </Typography>
           )}
 
-          {/* ── Bên PHẢI: actions ── */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {loggedInUser ? (
               <>
@@ -394,7 +375,6 @@ function TopBar({ topBarText, loggedInUser, onLogout, onPhotoUploaded }) {
         />
       )}
 
-      {/* "Đăng nhập để tiếp tục" dialog */}
       <Dialog
         open={loginToContinueOpen}
         onClose={() => setLoginToContinueOpen(false)}

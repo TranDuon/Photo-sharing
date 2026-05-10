@@ -15,20 +15,15 @@ const DRAWER_WIDTH = 230;
 function App() {
   const [topBarText, setTopBarText] = useState("");
   const [loggedInUser, setLoggedInUser] = useState(null);
-
-  // Tăng key này để UserPhotos tự refetch khi có ảnh mới được upload
   const [photoRefreshKey, setPhotoRefreshKey] = useState(0);
 
   const handleContextChange = useCallback((text) => setTopBarText(text), []);
 
   const handleLoginSuccess = useCallback((user) => {
-    // Server có thể trả về { user, token } hoặc trực tiếp user object
     const userObj = user.user ?? user;
     const token = user.token ?? null;
-
     setLoggedInUser(userObj);
     setTopBarText("");
-
     if (token) setAuthToken(token);
   }, []);
 
@@ -78,7 +73,6 @@ function App() {
           </Drawer>
         )}
 
-        {/* ── Main content area ── */}
         <Box
           component="main"
           sx={{
@@ -90,7 +84,6 @@ function App() {
           <Switch>
             <Redirect exact from="/" to="/users" />
 
-            {/* Login / Register */}
             <Route
               path="/login"
               render={() =>

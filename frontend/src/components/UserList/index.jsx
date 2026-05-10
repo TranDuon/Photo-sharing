@@ -14,7 +14,6 @@ import { User } from "lucide-react";
 import fetchModel from "../../lib/fetchModelData";
 import { COLORS, RADIUS, SHADOWS } from "../../designTokens";
 
-/** Đưa tài khoản đang đăng nhập lên đầu; còn lại sắp theo họ tên. */
 function sortUsersWithSelfFirst(users, selfId) {
   if (!selfId) return users;
   const id = String(selfId);
@@ -28,13 +27,6 @@ function sortUsersWithSelfFirst(users, selfId) {
   });
 }
 
-/**
- * UserList
- *
- * Props:
- *   loggedInUser {object|null} - nếu có: ưu tiên hiển thị bản thân đầu danh sách
- *   onUserSelect {function}    - optional callback(user) khi click vào một user
- */
 function UserList({ loggedInUser, onUserSelect }) {
   const [userList, setUserList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -78,17 +70,7 @@ function UserList({ loggedInUser, onUserSelect }) {
 
   return (
     <Box>
-      {/* Header */}
-      <Box
-        sx={{
-          px: 2,
-          pt: 2,
-          pb: 1,
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-        }}
-      >
+      <Box sx={{ px: 2, pt: 2, pb: 1, display: "flex", alignItems: "center", gap: 1 }}>
         <Box
           sx={{
             display: "inline-flex",
@@ -119,16 +101,7 @@ function UserList({ loggedInUser, onUserSelect }) {
         </Typography>
       </Box>
 
-      {/* Decorative divider */}
-      <Box
-        sx={{
-          mx: 2,
-          mb: 1,
-          height: 2,
-          backgroundColor: COLORS.muted,
-          borderRadius: 1,
-        }}
-      />
+      <Box sx={{ mx: 2, mb: 1, height: 2, backgroundColor: COLORS.muted, borderRadius: 1 }} />
 
       {loading && (
         <Box sx={{ display: "flex", justifyContent: "center", py: 3 }}>
@@ -148,7 +121,6 @@ function UserList({ loggedInUser, onUserSelect }) {
             const path = `/users/${user._id}`;
             const isActive = location.pathname === path;
             const isSelf = loggedInUser && String(user._id) === String(loggedInUser._id);
-            // Slight alternating rotation for playful feel
             const rot = idx % 2 === 0 ? "-0.5deg" : "0.5deg";
 
             return (

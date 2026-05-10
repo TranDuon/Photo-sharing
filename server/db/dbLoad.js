@@ -1,7 +1,3 @@
-/**
- * dbLoad.js — Seed MongoDB với dữ liệu mẫu.
- * Chạy: npm run seed
- */
 require("dotenv").config({ path: require("path").join(__dirname, "../.env") });
 
 const mongoose  = require("mongoose");
@@ -10,19 +6,17 @@ const User       = require("./userModel");
 const Photo      = require("./photoModel");
 const SchemaInfo = require("./schemaInfo");
 
-/* ── Dữ liệu mẫu ── */
 const seedUsers = [
-  { first_name: "Ian",   last_name: "Malcolm",  location: "Austin, TX",   description: "Chaos theory enthusiast", occupation: "Mathematician", login_name: "ian",   password: "123456" },
-  { first_name: "Ellie", last_name: "Sattler",  location: "Denver, CO",   description: "Palaeobotanist",          occupation: "Scientist",     login_name: "ellie", password: "123456" },
-  { first_name: "Alan",  last_name: "Grant",    location: "Montana",      description: "Loves dinosaur fossils",  occupation: "Palaeontologist",login_name: "alan",  password: "123456" },
-  { first_name: "John",  last_name: "Hammond",  location: "Isla Nublar",  description: "Theme park visionary",    occupation: "Entrepreneur",  login_name: "john",  password: "123456" },
+  { first_name: "Ian",   last_name: "Malcolm",  location: "Austin, TX",   description: "Chaos theory enthusiast", occupation: "Mathematician",   login_name: "ian",   password: "123456" },
+  { first_name: "Ellie", last_name: "Sattler",  location: "Denver, CO",   description: "Palaeobotanist",          occupation: "Scientist",       login_name: "ellie", password: "123456" },
+  { first_name: "Alan",  last_name: "Grant",    location: "Montana",      description: "Loves dinosaur fossils",  occupation: "Palaeontologist", login_name: "alan",  password: "123456" },
+  { first_name: "John",  last_name: "Hammond",  location: "Isla Nublar",  description: "Theme park visionary",    occupation: "Entrepreneur",    login_name: "john",  password: "123456" },
 ];
 
 async function seed() {
   await mongoose.connect(process.env.MONGO_URI);
   console.log("Connected to MongoDB");
 
-  // Xoá dữ liệu cũ
   await Promise.all([
     User.deleteMany({}),
     Photo.deleteMany({}),
@@ -30,7 +24,6 @@ async function seed() {
   ]);
   console.log("Cleared existing data");
 
-  // Tạo users với mật khẩu đã hash
   const createdUsers = await Promise.all(
     seedUsers.map(async (u) => {
       const hash = await bcrypt.hash(u.password, 10);
@@ -39,7 +32,6 @@ async function seed() {
   );
   console.log(`Created ${createdUsers.length} users`);
 
-  // Tạo photos + comments
   const [ian, ellie, alan, john] = createdUsers;
 
   await Photo.create([
@@ -78,7 +70,6 @@ async function seed() {
   ]);
   console.log("Created photos with comments");
 
-  // SchemaInfo
   await SchemaInfo.create({ __v: 0 });
   console.log("Created SchemaInfo");
 

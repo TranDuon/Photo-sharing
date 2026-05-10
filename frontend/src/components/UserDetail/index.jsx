@@ -14,15 +14,6 @@ import { MapPin, Briefcase, Info, Image } from "lucide-react";
 import fetchModel from "../../lib/fetchModelData";
 import { COLORS, RADIUS, SHADOWS } from "../../designTokens";
 
-/**
- * UserDetail
- *
- * Hiển thị thông tin chi tiết của một user.
- * Route param : userId  (từ /users/:userId)
- *
- * Props:
- *   setTopBarText {function} - callback(string) để cập nhật TopBar context
- */
 function UserDetail({ setTopBarText }) {
   const { userId } = useParams();
   const [user, setUser] = useState(null);
@@ -91,7 +82,6 @@ function UserDetail({ setTopBarText }) {
         transition: "transform 150ms",
         "&:hover": { transform: "rotate(0.5deg)" },
         position: "relative",
-        /* Tape decoration */
         "&::before": {
           content: '""',
           position: "absolute",
@@ -107,7 +97,6 @@ function UserDetail({ setTopBarText }) {
       }}
     >
       <CardContent>
-        {/* Name as big heading */}
         <Typography
           variant="h4"
           sx={{
@@ -120,7 +109,6 @@ function UserDetail({ setTopBarText }) {
           {user.first_name} {user.last_name}
         </Typography>
 
-        {/* Decorative underline */}
         <Box
           sx={{
             width: 80,
@@ -211,7 +199,6 @@ function UserDetail({ setTopBarText }) {
         </Box>
       </CardContent>
 
-      {/* Decorative divider */}
       <Box
         sx={{
           mx: 2,

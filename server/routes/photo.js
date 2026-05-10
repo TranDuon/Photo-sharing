@@ -1,14 +1,3 @@
-/**
- * routes/photo.js
- *
- * Lab 2:
- * GET  /photosOfUser/:id  → công khai
- *
- * Final Project (Problem 3):
- *   POST   /photos/new        → upload ảnh mới (multipart/form-data, key="photo")
- *   PATCH  /photos/:photoId   → sửa caption
- *   DELETE /photos/:photoId  → xoá ảnh + file
- */
 const publicPhotoRouter = require("express").Router();
 const mutationsRouter   = require("express").Router();
 const mongoose = require("mongoose");
@@ -20,10 +9,6 @@ const { v4: uuidv4 } = require("uuid");
 const Photo = require("../db/photoModel");
 const User  = require("../db/userModel");
 
-/**
- * Trả về JSON một ảnh giống GET /photosOfUser (comments đã populate user).
- * @param {import("mongoose").Document|object} photo — document hoặc plain (.lean())
- */
 async function formatPhotoForResponse(photo) {
   const p = photo.toObject ? photo.toObject() : photo;
   const comments = await Promise.all(
@@ -50,9 +35,6 @@ async function formatPhotoForResponse(photo) {
   };
 }
 
-/* ══════════════════════════════════════════════════════
-   GET /photosOfUser/:id  — CÔNG KHAI (không cần JWT)
-══════════════════════════════════════════════════════ */
 publicPhotoRouter.get("/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -70,29 +52,21 @@ publicPhotoRouter.get("/:id", async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════════════════
-   MULTER CONFIG (cho POST /photos/new)
-══════════════════════════════════════════════════════ */
-
-/** Whitelist các đuôi file ảnh được phép */
 const ALLOWED_EXTS  = [".jpg", ".jpeg", ".png", ".gif"];
 const ALLOWED_MIMES = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
 
 const storage = multer.diskStorage({
-  /** Lưu vào server/images/ */
   destination: (req, file, cb) => {
     const dir = path.join(__dirname, "../images");
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     cb(null, dir);
   },
-  /** Tên file = uuid + extension gốc, ví dụ: a3f2b1c4-9d3e-...-fb.jpg */
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     cb(null, `${uuidv4()}${ext}`);
   },
 });
 
-/** Filter: chỉ chấp nhận file ảnh */
 function fileFilter(req, file, cb) {
   const ext = path.extname(file.originalname).toLowerCase();
   if (ALLOWED_EXTS.includes(ext) && ALLOWED_MIMES.includes(file.mimetype)) {
@@ -104,20 +78,11 @@ function fileFilter(req, file, cb) {
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 10 * 1024 * 1024 },  // 10 MB
+  limits: { fileSize: 10 * 1024 * 1024 },
 });
 
-/* ══════════════════════════════════════════════════════
-   POST /photos/new
-
-   Auth: yêu cầu JWT (mounted with requireAuth ở index.js).
-   Body: multipart/form-data — field "photo" (file), "caption" (text, optional).
-══════════════════════════════════════════════════════ */
 mutationsRouter.post("/new", (req, res) => {
-  // Wrap multer trong handler riêng để bắt lỗi (file size, file type)
   upload.single("photo")(req, res, async (err) => {
-
-    /* ── Lỗi multer (file quá lớn / type sai) ── */
     if (err) {
       if (err instanceof multer.MulterError) {
         if (err.code === "LIMIT_FILE_SIZE") {
@@ -125,11 +90,9 @@ mutationsRouter.post("/new", (req, res) => {
         }
         return res.status(400).json(`Upload error: ${err.message}`);
       }
-      // Lỗi từ fileFilter
       return res.status(400).json(err.message);
     }
 
-    /* ── [1] Không có file ── */
     if (!req.file) {
       return res.status(400).json("No file uploaded");
     }
@@ -138,16 +101,14 @@ mutationsRouter.post("/new", (req, res) => {
       const caption =
         typeof req.body.caption === "string" ? req.body.caption.trim() : "";
 
-      /* ── [2] + [3]: Tạo Photo document và lưu DB ── */
       const photo = await Photo.create({
-        user_id:   req.userId,           // từ auth middleware
-        file_name: req.file.filename,    // uuid.ext
+        user_id:   req.userId,
+        file_name: req.file.filename,
         caption,
-        date_time: new Date(),           // server time
+        date_time: new Date(),
         comments:  [],
       });
 
-      /* ── [4]: Trả về photo object ── */
       return res.status(201).json({
         _id:       photo._id,
         user_id:   photo.user_id,
@@ -158,7 +119,6 @@ mutationsRouter.post("/new", (req, res) => {
       });
 
     } catch (dbErr) {
-      // Nếu DB lỗi → xoá file vừa upload để không "mồ côi"
       if (req.file?.path) {
         fs.unlink(req.file.path, () => {});
       }
@@ -168,10 +128,6 @@ mutationsRouter.post("/new", (req, res) => {
   });
 });
 
-/* ══════════════════════════════════════════════════════
-   PATCH /photos/:photoId  — chỉ chủ ảnh sửa caption
-   Body JSON: { caption: string }
-══════════════════════════════════════════════════════ */
 mutationsRouter.patch("/:photoId", async (req, res) => {
   const { photoId } = req.params;
   const { caption } = req.body;
@@ -207,9 +163,6 @@ mutationsRouter.patch("/:photoId", async (req, res) => {
   }
 });
 
-/* ══════════════════════════════════════════════════════
-   DELETE /photos/:photoId — chỉ chủ ảnh xoá (file + DB)
-══════════════════════════════════════════════════════ */
 mutationsRouter.delete("/:photoId", async (req, res) => {
   const { photoId } = req.params;
 
