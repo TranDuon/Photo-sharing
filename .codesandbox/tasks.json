@@ -1,0 +1,21 @@
+{
+  "$schema": "https://codesandbox.io/schemas/tasks.json",
+  "tasks": {
+    "backend": {
+      "name": "Backend (Express)",
+      "command": "cd server && npm install && npm run dev",
+      "runAtStart": true,
+      "preview": {
+        "port": 5000
+      }
+    },
+    "frontend": {
+      "name": "Frontend (Vite)",
+      "command": "cd frontend && npm install && npm run dev -- --host",
+      "runAtStart": true,
+      "preview": {
+        "port": 5173
+      }
+    }
+  }
+}
